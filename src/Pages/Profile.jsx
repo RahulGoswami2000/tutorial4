@@ -4,6 +4,7 @@ import {
   CardActionArea,
   CardContent,
   Grid,
+  TextField,
   Typography,
 } from "@mui/material";
 import axios from "axios";
@@ -12,11 +13,14 @@ import { Link, useNavigate } from "react-router-dom";
 const baseURL = "https://express-t4.onrender.com/api/users";
 function Profile() {
   const [profiles, setProfiles] = useState([]);
+  const [query, setQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   useEffect(() => {
     const profille = async () => {
       try {
         const response = await axios.get(baseURL);
         setProfiles(response.data);
+        setFilteredData(response.data);
         console.log(response.data);
       } catch {
         console.error();
@@ -24,13 +28,32 @@ function Profile() {
     };
     profille();
   }, []);
+
+  const search = (event) => {
+    const query = event.target.value;
+    setQuery(query);
+    console.log(query);
+    const filterData = profiles.filter((profile) =>
+      profile.name.toLowerCase().includes(query.toLowerCase())
+    );
+    console.log(filterData);
+    setFilteredData(filterData)
+  };
   return (
     <>
       <Typography variant="h5" gutterBottom>
         Profiles
       </Typography>
+      <TextField
+        label="Search"
+        variant="outlined"
+        value={query}
+        onChange={search}
+        fullWidth
+        margin="normal"
+      />
       <Grid container spacing={2}>
-        {profiles.map((profile) => (
+        {filteredData.map((profile) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={profile.id}>
             <Card>
               <CardActionArea
@@ -42,7 +65,7 @@ function Profile() {
                   <img
                     src={profile.picture}
                     alt={profile.title}
-                    style={{ width: "100%", height: "10", objectFit:"cover" }}
+                    style={{ width: "100%", height: "10", objectFit: "cover" }}
                   />
                 </Box>
                 <CardContent>

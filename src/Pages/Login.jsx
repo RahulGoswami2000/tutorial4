@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -17,8 +18,9 @@ function Login() {
       });
       navigate(`/profile`);
       console.log(response);
-    } catch {
-      console.error();
+    } catch (error) {
+      setError("Invalid email or password");
+      console.error(error);
     }
   };
   return (
@@ -55,6 +57,7 @@ function Login() {
         <Button type="submit" variant="contained">
           Login
         </Button>
+        {error && <Typography color="error">{error}</Typography>}
       </Box>
     </>
   );
